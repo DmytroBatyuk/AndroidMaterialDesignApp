@@ -11,7 +11,6 @@
     <style name="DefaultRectangleView">
         <item name="android:layout_width">32dp</item>
         <item name="android:layout_height">32dp</item>
-        <item name="android:layout_margin">8dp</item>
     </style>
 
 </resources>
