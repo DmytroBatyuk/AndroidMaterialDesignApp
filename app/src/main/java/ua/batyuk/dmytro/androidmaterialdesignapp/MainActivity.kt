@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,6 +76,21 @@ private class ItemTouchHelperCallback(val moveContract: MoveContract) : ItemTouc
         // Leave it empty because we don't support swiping in concrete implementation
     }
 
+    override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+        if (ItemTouchHelper.ACTION_STATE_DRAG == actionState) {
+            if (viewHolder is ViewHolder) {
+                viewHolder.isDragged(true)
+            }
+        }
+        super.onSelectedChanged(viewHolder, actionState)
+    }
+
+    override fun clearView(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?) {
+        super.clearView(recyclerView, viewHolder)
+        if (viewHolder is ViewHolder) {
+            viewHolder.isDragged(false)
+        }
+    }
 }
 
 private class Adapter : RecyclerView.Adapter<ViewHolder>() {
@@ -122,12 +138,20 @@ private class Adapter : RecyclerView.Adapter<ViewHolder>() {
     }
 }
 
-private class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+private class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     private var title: TextView = view.findViewById(R.id.title)
     private var description: TextView = view.findViewById(R.id.description)
+
+    init {
+    }
 
     fun bind(position: Int) {
         title.text = "Title #$position"
         description.text = "Description #$position text is over here"
+    }
+
+    fun isDragged(isDragged: Boolean) {
+        Log.e("DIMA", "isDragged=$isDragged")
+        view.elevation = if (isDragged) 100f else 0f
     }
 }
